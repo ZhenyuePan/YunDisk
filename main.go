@@ -22,6 +22,9 @@ func main() {
 	r.GET("/file/meta", func(c *gin.Context) {
 		handler.GetFileMetaHandler(c.Writer, c.Request)
 	})
+	r.GET("/file/download", func(c *gin.Context) {
+		handler.DownloadHandler(c.Writer, c.Request)
+	})
 	// 启动服务
 	err := r.Run(":8080")
 	if err != nil {
