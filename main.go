@@ -13,6 +13,9 @@ func main() {
 	r.GET("/file/upload", func(c *gin.Context) {
 		handler.UpLoadHandler(c.Writer, c.Request)
 	})
+	r.POST("/file/upload", func(c *gin.Context) {
+		handler.UpLoadSucHandler(c.Writer, c.Request)
+	})
 
 	// 启动服务
 	err := r.Run(":8080")
