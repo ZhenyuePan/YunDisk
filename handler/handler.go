@@ -3,11 +3,9 @@ package handler
 import (
 	"YunDisk/meta"
 	"YunDisk/util"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"path/filepath"
 	"time"
 )
 
@@ -15,72 +13,48 @@ import (
 func UpLoadHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		// 处理GET请求
 		data, err := os.ReadFile("static/view/index.html")
 		if err != nil {
-			http.Error(w, "internal server error", http.StatusInternalServerError)
+			io.WriteString(w, "internel server error")
 			return
 		}
-		w.Write(data)
-
+		io.WriteString(w, string(data))
 	case "POST":
-		// 1. 获取上传文件
+		// 处理POST请求
+		r.FormFile("file")
 		file, header, err := r.FormFile("file")
 		if err != nil {
-			fmt.Printf("FormFile error: %v\n", err)
-			http.Error(w, "failed to get uploaded file", http.StatusBadRequest)
+			io.WriteString(w, "internel server error")
 			return
 		}
 		defer file.Close()
-
-		// 2. 准备目标目录
-		targetDir := "/tmp/YunDisk"
-		if err := os.MkdirAll(targetDir, 0755); err != nil {
-			fmt.Printf("MkdirAll error: %v\n", err)
-			http.Error(w, "failed to create target directory", http.StatusInternalServerError)
-			return
+		fileMeta := meta.FileMeta{
+			FileSha1: "",
+			FileName: header.Filename,
+			FileSize: header.Size,
+			Location: "/tmp/YunDisk/" + header.Filename,
+			UploadAt: time.Now().Format("2006-01-02 15:04:05"),
 		}
-
-		// 3. 创建目标文件
-		targetPath := filepath.Join(targetDir, header.Filename)
-		newFile, err := os.Create(targetPath)
+		newFile, err := os.Create("/YunDisk/" + header.Filename)
 		if err != nil {
-			fmt.Printf("Create error: %v (Path: %s)\n", err, targetPath)
-			http.Error(w, "failed to create file", http.StatusInternalServerError)
+			io.WriteString(w, "internel server error")
 			return
 		}
 		defer newFile.Close()
-
-		// 4. 复制文件内容
-		if _, err := io.Copy(newFile, file); err != nil {
-			fmt.Printf("Copy error: %v\n", err)
-			http.Error(w, "failed to save file content", http.StatusInternalServerError)
+		_, err = io.Copy(newFile, file)
+		if err != nil {
+			io.WriteString(w, "internel server error")
 			return
 		}
-
-		// 5. 计算SHA1
-		if _, err := newFile.Seek(0, 0); err != nil {
-			fmt.Printf("Seek error: %v\n", err)
-			http.Error(w, "failed to read file", http.StatusInternalServerError)
-			return
-		}
-		fileSha1 := util.FileSha1(newFile)
-
-		// 6. 保存元数据
-		fileMeta := meta.FileMeta{
-			FileSha1: fileSha1,
-			FileName: header.Filename,
-			FileSize: header.Size,
-			Location: targetPath,
-			UploadAt: time.Now().Format("2006-01-02 15:04:05"),
-		}
+		newFile.Seek(0, 0)
+		fileMeta.FileSha1 = util.FileSha1(newFile)
 		meta.UpdateFileMeta(fileMeta)
-		fmt.Printf("File uploaded successfully: %s\n", targetPath)
-
 		http.Redirect(w, r, "/file/upload/suc", http.StatusFound)
 	}
 }
 
 // 上传成功
 func UpLoadSucHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Uploaded successfully"))
+	io.WriteString(w, "Uploaded successfully")
 }
