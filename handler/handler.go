@@ -4,6 +4,7 @@ import (
 	"YunDisk/meta"
 	"YunDisk/util"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -16,7 +17,7 @@ func UpLoadHandler(w http.ResponseWriter, r *http.Request) {
 		// 处理GET请求
 		data, err := os.ReadFile("static/view/index.html")
 		if err != nil {
-			io.WriteString(w, "internel server error")
+			log.Printf("Create error! err: %v", err)
 			return
 		}
 		io.WriteString(w, string(data))
@@ -25,7 +26,7 @@ func UpLoadHandler(w http.ResponseWriter, r *http.Request) {
 		r.FormFile("file")
 		file, header, err := r.FormFile("file")
 		if err != nil {
-			io.WriteString(w, "internel server error")
+			log.Printf("FormFile error! err: %v", err)
 			return
 		}
 		defer file.Close()
@@ -38,13 +39,15 @@ func UpLoadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		newFile, err := os.Create("/tmp/YunDisk/" + header.Filename)
 		if err != nil {
-			io.WriteString(w, "internel server error")
+			log.Printf("Create error! err: %v", err)
+
 			return
 		}
 		defer newFile.Close()
 		_, err = io.Copy(newFile, file)
 		if err != nil {
-			io.WriteString(w, "internel server error")
+			log.Printf("io Copy error! err: %v", err)
+
 			return
 		}
 		newFile.Seek(0, 0)
