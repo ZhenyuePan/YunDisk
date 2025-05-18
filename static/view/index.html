@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易云网盘文件上传页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .upload-container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .upload-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .file-input {
+            margin-bottom: 1rem;
+        }
+        .upload-button {
+            padding: 0.5rem 1rem;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .upload-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h2 class="upload-title">文件上传</h2>
+        <form class="upload-form" action="#" method="post" enctype="multipart/form-data">
+            <input type="file" class="file-input" name="file" multiple>
+            <input type="submit" class="upload-button" value="上传文件">
+        </form>
+    </div>
+</body>
+</html>
