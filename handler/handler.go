@@ -36,7 +36,7 @@ func UpLoadHandler(w http.ResponseWriter, r *http.Request) {
 			Location: "/tmp/YunDisk/" + header.Filename,
 			UploadAt: time.Now().Format("2006-01-02 15:04:05"),
 		}
-		newFile, err := os.Create("/YunDisk/" + header.Filename)
+		newFile, err := os.Create("/tmp/YunDisk/" + header.Filename)
 		if err != nil {
 			io.WriteString(w, "internel server error")
 			return
