@@ -17,7 +17,7 @@ func main() {
 		handler.UpLoadHandler(c.Writer, c.Request)
 	})
 	r.GET("/file/upload/suc", func(c *gin.Context) {
-		handler.UpLoadHandler(c.Writer, c.Request)
+		handler.UpLoadSucHandler(c.Writer, c.Request) // 修改这里
 	})
 	r.GET("/file/meta", func(c *gin.Context) {
 		handler.GetFileMetaHandler(c.Writer, c.Request)

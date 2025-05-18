@@ -74,9 +74,9 @@ func UpLoadHandler(w http.ResponseWriter, r *http.Request) {
 
 // 上传成功
 func UpLoadSucHandler(w http.ResponseWriter, r *http.Request) {
-	// 设置中文编码头
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8md")
-	_, _ = io.WriteString(w, "文件传输成功！") // 修改输出内容
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8") // 修正编码声明
+	w.WriteHeader(http.StatusOK)
+	_, _ = io.WriteString(w, "文件上传成功！") // 明确提示成功状态
 }
 
 // 获取文件元信息
