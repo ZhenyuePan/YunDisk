@@ -10,27 +10,17 @@ import (
 func main() {
 	r := gin.Default()
 
-	r.GET("/file/upload", func(c *gin.Context) {
-		handler.UpLoadView(c.Writer, c.Request)
-	})
-	r.POST("/file/upload", func(c *gin.Context) {
-		handler.UpLoadHandler(c.Writer, c.Request)
-	})
-	r.GET("/file/upload/suc", func(c *gin.Context) {
-		handler.UpLoadSucHandler(c.Writer, c.Request) // 修改这里
-	})
-	r.GET("/file/meta", func(c *gin.Context) {
-		handler.GetFileMetaHandler(c.Writer, c.Request)
-	})
-	r.GET("/file/download", func(c *gin.Context) {
-		handler.DownloadHandler(c.Writer, c.Request)
-	})
-	r.GET("/file/update", func(c *gin.Context) {
-		handler.FileMetaUpdateHandler(c.Writer, c.Request)
-	})
-	r.GET("/file/delete", func(c *gin.Context) {
-		handler.FileDeleteHandler(c.Writer, c.Request)
-	})
+	// 路由分组简化
+	fileGroup := r.Group("/file")
+	{
+		fileGroup.GET("/upload", gin.WrapF(handler.UpLoadView))
+		fileGroup.POST("/upload", gin.WrapF(handler.UpLoadHandler))
+		fileGroup.GET("/upload/suc", gin.WrapF(handler.UpLoadSucHandler))
+		fileGroup.GET("/meta", gin.WrapF(handler.GetFileMetaHandler))
+		fileGroup.GET("/download", gin.WrapF(handler.DownloadHandler))
+		fileGroup.GET("/update", gin.WrapF(handler.FileMetaUpdateHandler))
+		fileGroup.GET("/delete", gin.WrapF(handler.FileDeleteHandler))
+	}
 	// 启动服务
 	err := r.Run(":8080")
 	if err != nil {
