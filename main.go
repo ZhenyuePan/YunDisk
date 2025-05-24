@@ -25,6 +25,12 @@ func main() {
 	r.GET("/file/download", func(c *gin.Context) {
 		handler.DownloadHandler(c.Writer, c.Request)
 	})
+	r.GET("/file/update", func(c *gin.Context) {
+		handler.FileMetaUpdateHandler(c.Writer, c.Request)
+	})
+	r.GET("/file/delete", func(c *gin.Context) {
+		handler.FileDeleteHandler(c.Writer, c.Request)
+	})
 	// 启动服务
 	err := r.Run(":8080")
 	if err != nil {
